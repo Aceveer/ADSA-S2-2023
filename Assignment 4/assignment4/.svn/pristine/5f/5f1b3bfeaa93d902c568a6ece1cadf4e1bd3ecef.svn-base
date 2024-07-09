@@ -1,0 +1,97 @@
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+
+using namespace std;
+
+// This function is to convert the input strings into matrices
+vector<vector<int>> stringToMatrix(const string& input, int dimensions) {
+
+    vector<vector<int>> matrix(dimensions, vector<int>(dimensions));
+
+    int row = 0;
+    int column = 0;
+
+    for (int i = 0; i < input.length(); i++) {
+        char c = input[i];
+        if (c == ',') {
+            // The row ends at comma
+            row++;
+            column = 0;
+        } else if (c == '0' || c == '1'){
+            // If it is a 0 or 1, it will go to country
+            int tempValue = c - '0';
+            matrix[row][column] = tempValue;
+            column++;
+        } else {
+            //This is for build and destory costs
+            int tempValue = c - 'A';
+            matrix[row][column] = tempValue;
+            column++;
+        }
+    }
+
+    return matrix;
+}
+
+// Function to print a matrix
+void printMatrix(const vector<vector<int>>& matrix) {
+    for (const vector<int>& row : matrix) {
+        for (int value : row) {
+            cout << value << " ";
+        }
+        cout << endl;
+    }
+}
+
+
+
+int main() {
+    string input;
+    getline(cin, input);
+
+    istringstream iss(input);
+    string token;
+    vector<string> tokens;
+
+    while (getline(iss, token, ' ')) {
+        tokens.push_back(token);
+    }
+
+    // Creating 3 segments for country, build and destroy
+    string country = tokens[0];
+    string build = tokens[1];
+    string destroy = tokens[2];
+
+    // cout << "Country: " << country << endl;
+    // cout << "Build: " << build << endl;
+    // cout << "Destroy: " << destroy << endl;
+
+    //Finding the dimension of the matrix
+    int dimensions = 0;
+    if(country.find(',')){
+        dimensions = country.find(',');
+    }
+    // cout << dimensions << endl;
+
+    //Create the matrices for the 3 segments
+    if(dimensions > 0){
+        vector<vector<int>> countryMatrix = stringToMatrix(country, dimensions);
+        vector<vector<int>> buildMatrix = stringToMatrix(build, dimensions);
+        vector<vector<int>> destroyMatrix = stringToMatrix(destroy, dimensions);
+
+        cout << "Country Matrix:" << endl;
+        printMatrix(countryMatrix);
+        
+        cout << "Build Matrix:" << endl;
+        printMatrix(buildMatrix);
+
+        cout << "Destroy Matrix:" << endl;
+        printMatrix(destroyMatrix);
+    } else {
+        // For the case when there is no input or dimension = 0
+        cout << "0" << endl;
+    }
+    return 0;
+}
